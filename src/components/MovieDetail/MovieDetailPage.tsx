@@ -1,7 +1,9 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { ErrorBoundary } from "react-error-boundary";
 import { useMovieDetails } from "../../hooks/useMovies";
 import { Container } from "../Container";
+import { MinimalErrorFallback } from "../ErrorBoundary";
 import { useMovieNavigation } from "./hooks/useMovieNavigation";
 import {
   MoviePoster,
@@ -51,29 +53,38 @@ export const MovieDetailPage: React.FC = () => {
       <main id="main-content">
         <BackButton onClick={navigateBack}>← Back to Search</BackButton>
 
-        <Content>
-          <MoviePoster
-            posterUrl={movieDetails.Poster}
-            title={movieDetails.Title}
-          />
-
-          <DetailsSection>
-            <Title>{movieDetails.Title}</Title>
-
-            <MovieMetaInfo
-              year={movieDetails.Year}
-              rated={movieDetails.Rated}
-              runtime={movieDetails.Runtime}
-              genre={movieDetails.Genre}
+        <ErrorBoundary
+          FallbackComponent={MinimalErrorFallback}
+          onError={(error) => {
+            if (process.env.NODE_ENV === "development") {
+              console.error("MovieDetail rendering error:", error);
+            }
+          }}
+        >
+          <Content>
+            <MoviePoster
+              posterUrl={movieDetails.Poster}
+              title={movieDetails.Title}
             />
 
-            {movieDetails.Plot && movieDetails.Plot !== "N/A" && (
-              <Plot>{movieDetails.Plot}</Plot>
-            )}
+            <DetailsSection>
+              <Title>{movieDetails.Title}</Title>
 
-            <MovieAdditionalInfo movieDetails={movieDetails} />
-          </DetailsSection>
-        </Content>
+              <MovieMetaInfo
+                year={movieDetails.Year}
+                rated={movieDetails.Rated}
+                runtime={movieDetails.Runtime}
+                genre={movieDetails.Genre}
+              />
+
+              {movieDetails.Plot && movieDetails.Plot !== "N/A" && (
+                <Plot>{movieDetails.Plot}</Plot>
+              )}
+
+              <MovieAdditionalInfo movieDetails={movieDetails} />
+            </DetailsSection>
+          </Content>
+        </ErrorBoundary>
       </main>
     </Container>
   );

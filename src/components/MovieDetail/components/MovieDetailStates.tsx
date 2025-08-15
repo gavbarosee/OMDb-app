@@ -1,5 +1,6 @@
 import React from "react";
 import { Container } from "../../Container";
+import { Spinner } from "../../Spinner";
 import {
   LoadingContainer,
   ErrorContainer,
@@ -21,7 +22,7 @@ export const MovieDetailLoading: React.FC<MovieDetailLoadingProps> = ({
 }) => (
   <Container>
     <LoadingContainer>
-      <div>{message}</div>
+      <Spinner loading={true} size={40} aria-label={message} />
     </LoadingContainer>
   </Container>
 );

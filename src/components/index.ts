@@ -5,3 +5,5 @@ export { MovieCard } from "./Card";
 export { SearchResults } from "./SearchResults";
 export { MovieDetailPage } from "./MovieDetail";
 export { HomePage } from "./HomePage";
+export { ErrorFallback, MinimalErrorFallback } from "./ErrorBoundary";
+export { Spinner } from "./Spinner";

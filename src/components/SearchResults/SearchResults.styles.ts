@@ -18,7 +18,3 @@ export const StatusMessage = styled.div`
 export const ErrorMessage = styled(StatusMessage)`
   color: ${({ theme }) => theme.colors.error || theme.colors.text.primary};
 `;
-
-export const LoadingMessage = styled(StatusMessage)`
-  color: ${({ theme }) => theme.colors.primary};
-`;

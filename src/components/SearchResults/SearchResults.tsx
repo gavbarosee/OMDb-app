@@ -1,12 +1,14 @@
 import { useMemo } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { MovieCard } from "../Card";
+import { MinimalErrorFallback } from "../ErrorBoundary";
+import { Spinner } from "../Spinner";
 import type { MovieSearchItem } from "../../services/types";
 import {
   ResultsContainer,
   ResultsGrid,
   StatusMessage,
   ErrorMessage,
-  LoadingMessage,
 } from "./SearchResults.styles";
 
 export interface SearchResultsProps {
@@ -40,9 +42,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   if (isLoading) {
     return (
       <ResultsContainer>
-        <LoadingMessage aria-live="polite" role="status">
-          Loading...
-        </LoadingMessage>
+        <Spinner loading={isLoading} aria-label="Loading search results" />
       </ResultsContainer>
     );
   }
@@ -73,15 +73,27 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
         Found {deduplicatedResults.length} result
         {deduplicatedResults.length !== 1 ? "s" : ""} for "{searchTerm}"
       </StatusMessage>
-      <ResultsGrid role="grid" aria-label={`Search results for ${searchTerm}`}>
-        {deduplicatedResults.map((movie, index) => (
-          <MovieCard
-            key={`${movie.imdbID}-${index}`}
-            movie={movie}
-            onClick={onMovieClick}
-          />
-        ))}
-      </ResultsGrid>
+      <ErrorBoundary
+        FallbackComponent={MinimalErrorFallback}
+        onError={(error) => {
+          if (process.env.NODE_ENV === "development") {
+            console.error("SearchResults rendering error:", error);
+          }
+        }}
+      >
+        <ResultsGrid
+          role="grid"
+          aria-label={`Search results for ${searchTerm}`}
+        >
+          {deduplicatedResults.map((movie, index) => (
+            <MovieCard
+              key={`${movie.imdbID}-${index}`}
+              movie={movie}
+              onClick={onMovieClick}
+            />
+          ))}
+        </ResultsGrid>
+      </ErrorBoundary>
     </ResultsContainer>
   );
 };

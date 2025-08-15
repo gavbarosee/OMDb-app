@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { MovieSearchItem } from "../../services/types";
 import {
   Card,
@@ -15,6 +15,8 @@ export interface MovieCardProps {
 }
 
 export const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
+  const [imageError, setImageError] = useState(false);
+
   const handleClick = () => {
     onClick?.(movie);
   };
@@ -26,7 +28,11 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
     }
   };
 
-  const hasPoster = movie.Poster && movie.Poster !== "N/A";
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  const hasPoster = movie.Poster && movie.Poster !== "N/A" && !imageError;
 
   return (
     <Card
@@ -37,7 +43,12 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
       aria-label={`View details for ${movie.Title} (${movie.Year})`}
     >
       {hasPoster ? (
-        <CardImage src={movie.Poster} alt={`${movie.Title} poster`} />
+        <CardImage
+          src={movie.Poster}
+          alt={`${movie.Title} poster`}
+          loading="lazy"
+          onError={handleImageError}
+        />
       ) : (
         <PlaceholderImage aria-hidden="true">
           No Image Available
