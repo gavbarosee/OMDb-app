@@ -1,27 +1,47 @@
-import { useEffect } from "react";
-
+import { useState } from "react";
 import "./App.css";
-import { omdbService } from "./services/omdb";
-function App() {
-  useEffect(() => {
-    omdbService
-      .searchMovies("batman")
-      .then((res) => console.log("res:", res))
-      .catch((err) => console.error("error:", err.message));
-  }, []);
+import { useMovieSearch, useMovieDetails } from "./hooks/useMovies";
 
-  useEffect(() => {
-    omdbService
-      .getMovieDetails("tt0372784")
-      .then((movieDetailsResponse) =>
-        console.log("movieDetailsResponse:", movieDetailsResponse)
-      )
-      .catch((err) => console.error("error:", err.message));
-  }, []);
+function App() {
+  const [searchTerm, setSearchTerm] = useState("batman");
+  const {
+    data: searchData,
+    isLoading: isSearchLoading,
+    error: searchError,
+    isFetching: isSearchFetching,
+  } = useMovieSearch(searchTerm);
+
+  const {
+    data: detailsData,
+    isLoading: isDetailsLoading,
+    error: detailsError,
+    isFetching: isDetailsFetching,
+  } = useMovieDetails("tt0372784");
+
+  console.log("search state:", {
+    isLoading: isSearchLoading,
+    isFetching: isSearchFetching,
+    hasData: !!searchData,
+    error: searchError?.message,
+  });
+
+  console.log("details state:", {
+    isLoading: isDetailsLoading,
+    isFetching: isDetailsFetching,
+    hasData: !!detailsData,
+    error: detailsError?.message,
+  });
+
+  if (searchData) {
+    console.log("search results:", searchData);
+  }
+  if (detailsData) {
+    console.log("movie details:", detailsData);
+  }
 
   return (
     <>
-      <h1>Hello World</h1>
+      <button onClick={() => setSearchTerm("batman")}>Search</button>
     </>
   );
 }
