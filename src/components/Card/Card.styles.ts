@@ -10,19 +10,25 @@ export const Card = styled.div`
 `;
 
 export const CardImage = styled.img`
-  ${mixins.fluidImage}
+  ${mixins.mobileOptimizedImage}
   margin-bottom: ${({ theme }) => theme.spacing.md};
 
-  /* Responsive max heights */
-  max-height: 200px;
-
+  /* Mobile-first approach - flexible aspect ratio on mobile */
   ${media.tablet`
-    max-height: 300px;
+    aspect-ratio: 2/3;
   `}
 
-  ${media.desktop`
-    max-height: 400px;
-  `}
+  /* Smooth loading transition */
+  transition: opacity 0.3s ease-in-out;
+
+  &:not([src]) {
+    opacity: 0;
+  }
+
+  /* Handle image loading states */
+  &[src] {
+    opacity: 1;
+  }
 `;
 
 export const CardTitle = styled.h3`
@@ -53,14 +59,31 @@ export const PlaceholderImage = styled.div`
   color: ${({ theme }) => theme.colors.text.secondary};
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
 
-  /* Responsive heights to match CardImage */
-  height: 200px;
+  /* Match CardImage aspect ratio and responsive behavior */
+  aspect-ratio: 2/3;
+  min-height: 200px;
+  max-height: 320px;
+
+  /* Responsive sizing to match mobileOptimizedImage mixin */
+  ${media.mobile`
+    min-height: 240px;
+    max-height: 360px;
+  `}
 
   ${media.tablet`
-    height: 300px;
+    min-height: 280px;
+    max-height: 400px;
   `}
 
   ${media.desktop`
-    height: 400px;
+    min-height: 300px;
+    max-height: 450px;
   `}
+  
+  /* Subtle border for better visual definition */
+  border: 1px solid ${({ theme }) => theme.colors.surface};
+
+  /* Center text properly */
+  text-align: center;
+  padding: ${({ theme }) => theme.spacing.md};
 `;

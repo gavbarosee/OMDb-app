@@ -1,4 +1,4 @@
-import React from "react";
+import { useMemo } from "react";
 import { MovieCard } from "../Card";
 import type { MovieSearchItem } from "../../services/types";
 import {
@@ -24,6 +24,19 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   searchTerm,
   onMovieClick,
 }) => {
+  const deduplicatedResults = useMemo(() => {
+    if (!results) return undefined;
+
+    const seen = new Set<string>();
+    return results.filter((movie) => {
+      if (seen.has(movie.imdbID)) {
+        return false;
+      }
+      seen.add(movie.imdbID);
+      return true;
+    });
+  }, [results]);
+
   if (isLoading) {
     return (
       <ResultsContainer>
@@ -44,7 +57,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
     );
   }
 
-  if (!results || results.length === 0) {
+  if (!deduplicatedResults || deduplicatedResults.length === 0) {
     return (
       <ResultsContainer>
         <StatusMessage>
@@ -57,12 +70,16 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   return (
     <ResultsContainer>
       <StatusMessage aria-live="polite" role="status">
-        Found {results.length} result{results.length !== 1 ? "s" : ""} for "
-        {searchTerm}"
+        Found {deduplicatedResults.length} result
+        {deduplicatedResults.length !== 1 ? "s" : ""} for "{searchTerm}"
       </StatusMessage>
       <ResultsGrid role="grid" aria-label={`Search results for ${searchTerm}`}>
-        {results.map((movie) => (
-          <MovieCard key={movie.imdbID} movie={movie} onClick={onMovieClick} />
+        {deduplicatedResults.map((movie, index) => (
+          <MovieCard
+            key={`${movie.imdbID}-${index}`}
+            movie={movie}
+            onClick={onMovieClick}
+          />
         ))}
       </ResultsGrid>
     </ResultsContainer>

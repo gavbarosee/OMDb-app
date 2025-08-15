@@ -144,6 +144,63 @@ export const mixins = {
     width: 100%;
     height: auto;
     object-fit: cover;
+    object-position: center;
     border-radius: ${({ theme }) => theme.borderRadius.sm};
+    display: block;
+  `,
+
+  mobileOptimizedImage: css`
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    border-radius: ${({ theme }) => theme.borderRadius.sm};
+    display: block;
+    background-color: ${({ theme }) => theme.colors.surface};
+
+    /* Mobile: Show full image with increased height */
+    min-height: 200px;
+    max-height: 320px;
+
+    ${media.mobile`
+      min-height: 240px;
+      max-height: 360px;
+      object-fit: contain;
+    `}
+
+    ${media.tablet`
+      min-height: 280px;
+      max-height: 400px;
+      object-fit: cover;
+    `}
+
+    ${media.desktop`
+      min-height: 300px;
+      max-height: 450px;
+      object-fit: cover;
+    `}
+  `,
+
+  posterImage: css`
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+    border-radius: ${({ theme }) => theme.borderRadius.md};
+    box-shadow: ${({ theme }) => theme.shadows.md};
+    display: block;
+    aspect-ratio: 2/3;
+
+    /* Ensure minimum quality on small screens */
+    min-width: 120px;
+    max-width: 100%;
+
+    ${media.mobile`
+      min-width: 150px;
+    `}
+
+    ${media.tablet`
+      min-width: 200px;
+    `}
   `,
 };

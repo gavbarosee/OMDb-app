@@ -28,20 +28,4 @@ export const typography = {
       font-size: ${({ theme }) => theme.typography.fontSize.md};
     `}
   `,
-
-  body: css`
-    font-family: ${({ theme }) => theme.typography.fontFamily.primary};
-    font-size: ${({ theme }) => theme.typography.fontSize.md};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.normal};
-    line-height: 1.5;
-    color: ${({ theme }) => theme.colors.text.primary};
-  `,
-
-  caption: css`
-    font-family: ${({ theme }) => theme.typography.fontFamily.primary};
-    font-size: ${({ theme }) => theme.typography.fontSize.sm};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.normal};
-    line-height: 1.4;
-    color: ${({ theme }) => theme.colors.text.secondary};
-  `,
 };
